@@ -1,24 +1,47 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import Navigation from './components/nav/Navigation';
+import Home from './views/Home';
+import Profile from './views/Profile';
+import Login from './components/auth/Login';
+import Signup from './components/auth/Signup';
+import Tasks from './views/Tasks';
+import ProtectedRoute from './ProtectedRoute';
+import { AnimatePresence } from 'framer-motion';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { orange, blueGrey, amber } from '@material-ui/core/colors';
+
+const theme = createMuiTheme({
+  palette: {
+    primary: amber,
+    secondary: blueGrey,
+  },
+  status: {
+    danger: orange
+  },
+  root: {
+  }
+})
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <MuiThemeProvider theme={theme}>
+          <Router>
+          <Navigation>
+            <AnimatePresence>
+                <Switch>
+                  <ProtectedRoute exact path="/" component={Home} />
+                  <ProtectedRoute exact path="/profile" component={Profile} />
+                  <ProtectedRoute exact path="/tasks" component={Tasks} />
+                  <Route exact path="/login" component={Login} />
+                  <Route exact path="/signup" component={Signup} />
+                </Switch>
+            </AnimatePresence>
+          </Navigation>
+          </Router>
+        </MuiThemeProvider>
     </div>
   );
 }

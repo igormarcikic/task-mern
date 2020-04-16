@@ -1,6 +1,9 @@
+const fs = require('fs');
+const path = require('path');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const Task = require('./task');
 
 const userSchema = new mongoose.Schema({
@@ -36,7 +39,13 @@ const userSchema = new mongoose.Schema({
         validate(value) {
             if(value.toLowerCase().includes('password')) throw new Error('Password cannot contain the word "password"');
         }
-    }
+    },
+    tokens: [{
+        token: {
+            type: String,
+            required: true
+        }
+    }]
 })
 
 // Virtual propery
@@ -47,7 +56,22 @@ userSchema.virtual('tasks', {
 });
 
 
-// Middleware - has password before saving
+// Generate login token - available on the instance
+userSchema.methods.generateAuthToken = async function() {
+    const user = this;
+    const keyPath = path.join(__dirname, '../private_key/key.txt');
+    const private_key = fs.readFileSync(keyPath, 'utf8');
+
+    const token = jwt.sign({_id: user._id.toString()}, private_key);
+    user.tokens = user.tokens.concat({token});
+    
+    await user.save();
+
+    return token;
+}
+
+
+// Middleware - hash password before saving
 userSchema.pre('save', async function(next){
     const user = this;
 
@@ -58,6 +82,17 @@ userSchema.pre('save', async function(next){
     next();
 
 });
+
+// Choose what we send
+userSchema.methods.toJSON = function() {
+    const user = this;
+    const userObject = user.toObject();
+
+    delete userObject.password;
+    delete userObject.tokens;
+
+    return userObject;
+}
 
 
 // Log in user/statics - available on User model

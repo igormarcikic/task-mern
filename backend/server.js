@@ -4,7 +4,8 @@ const userRouter = require('./routers/users');
 const taskRouter = require('./routers/tasks');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
+
 
 // Parse requests automatically
 app.use(express.json());
@@ -14,8 +15,6 @@ app.use(express.json());
 app.use(userRouter);
 // Task Routes
 app.use(taskRouter);
-
-
 
 
 app.listen(port, ()=>{
