@@ -13,9 +13,11 @@ import {
     IconButton,
     Typography,
     Box,
+    Snackbar
 } from '@material-ui/core';
 import WorkIcon from '@material-ui/icons/Work';
 import DeleteIcon from '@material-ui/icons/Delete';
+import MuiAlert from '@material-ui/lab/Alert';
 import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
@@ -30,8 +32,45 @@ const useStyles = makeStyles((theme) => ({
 const Home = () => {
   const classes = useStyles();
   const [ tasks, setTasks ] = useState([]);
+  const [snackbar, setSnackbar] = useState({
+    message: null,
+    display: false,
+    severity: null
+  });
   const { state: {userData:{token}} } = useContext(AuthContext);
+
+  const handleClick = (message) => {
+    if(message === 'success') {
+      setSnackbar({
+        message: 'Note deleted sucessfully.',
+        display: true,
+        severity: 'success'
+      })
+    } 
+
+    if(message === 'error') {
+      setSnackbar({
+        message: 'There was an error.',
+        display: true,
+        severity: 'error'
+      })
+    }
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSnackbar({
+      ...snackbar,
+      display: false
+    });
+  };
   
+  const Alert = (props) => {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
     
     const deleteTask = async (id) => {
         await axios({
@@ -43,7 +82,7 @@ const Home = () => {
         let newTasks = [...tasks];
         newTasks = newTasks.filter(task=> task._id !== id);
         setTasks(newTasks);
-        
+        handleClick('success');
     };
     
     useEffect(()=>{
@@ -93,6 +132,13 @@ const Home = () => {
             </Typography>
         </Box>}
         </List>
+        
+        <Snackbar open={snackbar.display} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity={snackbar.severity}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+
       </Container>
     </motion.div>
   );

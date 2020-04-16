@@ -13,7 +13,8 @@ import {
     TextField,
     Box,
     Button,
-    Typography
+    Typography,
+    Snackbar
 } from '@material-ui/core';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import EmailIcon from '@material-ui/icons/Email';
@@ -47,6 +48,7 @@ const LoginSchema = Yup.object().shape({
 
 const Login = (props) => {
     const { state: {error}, dispatch } = useContext(AuthContext);
+    const [open, setOpen] = useState(false);
     const [alertState, setAlertState] = useState({
         success: false,
         error: false
@@ -68,6 +70,22 @@ const Login = (props) => {
           };
     },[]);
 
+    const Alert = (props) => {
+        return <MuiAlert elevation={6} variant="filled" {...props} />;
+      }
+
+      const handleClick = () => {
+        setOpen(true);
+      };
+    
+      const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        setOpen(false);
+      };
+
     const onSubmit = async (values) => {
         try {
             const user = await axios({
@@ -85,6 +103,7 @@ const Login = (props) => {
                 success: true
             });
             history.push("/");
+            handleClick();
         }catch(error) {
             dispatch(loginError());
             setAlertState({
@@ -95,9 +114,7 @@ const Login = (props) => {
 
     }
 
-      const Alert = (props) => {
-        return <MuiAlert elevation={6} variant="filled" {...props} />;
-      }
+      
 
 
 
@@ -178,6 +195,12 @@ const Login = (props) => {
                                     </div>
                                     {alertState.error ? <Alert severity="error" className={classes.alert}>{error}</Alert> : null }
                                     {alertState.success ? <Alert severity="success" className={classes.alert}> You've logged in successfully. </Alert> : null }
+                                    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                                        <Alert onClose={handleClose} severity="success">
+                                        This is a success message!
+                                        </Alert>
+                                    </Snackbar>
+
                                     <Box
                                         display='flex' 
                                         justifyContent="center"  

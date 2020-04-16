@@ -9,7 +9,8 @@ import {
     Grid,
     Typography,
     Box,
-    TextField
+    TextField,
+    Snackbar
 } from '@material-ui/core';
 import TitleIcon from '@material-ui/icons/Title';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
@@ -40,11 +41,42 @@ const TaskSchema = Yup.object().shape({
 const Tasks = () => {
   const classes = useStyles();
   const [ tasks, setTasks ] = useState([]);
-  const [alertState, setAlertState] = useState({
-      success: false,
-      error: false
+  const [snackbar, setSnackbar] = useState({
+    message: null,
+    display: false,
+    severity: null
   });
   const { state: {userData:{token}, error}, dispatch } = useContext(AuthContext);
+
+  const handleClick = (message) => {
+    console.log(message)
+    if(message === 'success') {
+      setSnackbar({
+        message: 'Note created sucessfully.',
+        display: true,
+        severity: 'success'
+      })
+    } 
+
+    if(message === 'error') {
+      setSnackbar({
+        message: 'There was an error.',
+        display: true,
+        severity: 'error'
+      })
+    }
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSnackbar({
+      ...snackbar,
+      display: false
+    });
+  };
 
     const onSubmit = async (values, resetForm) => {
       try {
@@ -61,16 +93,10 @@ const Tasks = () => {
         allTasks.push(task.data);
         setTasks(allTasks);
         resetForm({});
-        setAlertState({
-          error: false,
-          success: true
-      });
+        handleClick('success');
     }catch(error) {
         dispatch(taskError());
-        setAlertState({
-          success: false,
-          error: true
-      });
+        handleClick('error');
       }
     }
 
@@ -158,8 +184,6 @@ const Tasks = () => {
                               </Grid>
                               </Grid>
                           </div>
-                          {alertState.error ? <Alert severity="error" className={classes.alert}>{error}</Alert> : null }
-                          {alertState.success ? <Alert severity="success" className={classes.alert}> Added new task successfully. </Alert> : null }
                           <Box
                               display='flex' 
                               justifyContent="center"  
@@ -180,6 +204,12 @@ const Tasks = () => {
                   )}
             </Formik>
         </Box>
+
+        <Snackbar open={snackbar.display} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity={snackbar.severity}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
       </Container>
     </motion.div>
   );
