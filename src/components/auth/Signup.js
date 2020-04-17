@@ -123,7 +123,7 @@ const Signup = (props) => {
             <CssBaseline>
                 
                 <Box>
-                    <Typography variant="h2" gutterBottom align="center">
+                    <Typography variant="h4" gutterBottom align="center">
                         Sign Up:
                     </Typography>
                 </Box>

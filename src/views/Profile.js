@@ -48,7 +48,7 @@ const About = () => {
 		>
 
             <Container>
-                <Typography variant="h2" gutterBottom align="center">
+                <Typography variant="h4" gutterBottom align="center">
                     Profile page:
                 </Typography>
                 <hr />

@@ -107,7 +107,7 @@ const Home = () => {
         exit={{ scale: 0, opacity: 0 }}
     >
       <Container align="center">
-        <Typography variant="h3" gutterBottom>
+        <Typography variant="h4" gutterBottom>
             All Tasks:
         </Typography>
         <hr />

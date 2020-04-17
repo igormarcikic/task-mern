@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { AuthContext } from '../../context/auth/AuthContext';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -14,7 +14,8 @@ import {
     Box,
     Button,
     Typography,
-    Snackbar
+    Snackbar,
+    CircularProgress 
 } from '@material-ui/core';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import EmailIcon from '@material-ui/icons/Email';
@@ -48,34 +49,35 @@ const LoginSchema = Yup.object().shape({
 
 const Login = (props) => {
     const { state: {error}, dispatch } = useContext(AuthContext);
-    const [open, setOpen] = useState(false);
-    const [alertState, setAlertState] = useState({
-        success: false,
-        error: false
-    })
+    const [snackbar, setSnackbar] = useState({
+      message: null,
+      display: false,
+      severity: null
+    });
+    const [loading, setLoading] = useState(false);
     const history = useHistory();
     const classes = useStyles();
-
-    useEffect(()=>{
-        setAlertState({
-            error: false,
-            success: false
-        });
-
-        return function() {
-            setAlertState({
-                error: false,
-                success: false
-            });
-          };
-    },[]);
 
     const Alert = (props) => {
         return <MuiAlert elevation={6} variant="filled" {...props} />;
       }
 
-      const handleClick = () => {
-        setOpen(true);
+      const handleClick = (message) => {
+        if(message === 'success') {
+          setSnackbar({
+            message: 'Logged in sucessfully.',
+            display: true,
+            severity: 'success'
+          })
+        } 
+    
+        if(message === 'error') {
+          setSnackbar({
+            message: 'There has been an authentication error.',
+            display: true,
+            severity: 'error'
+          })
+        }
       };
     
       const handleClose = (event, reason) => {
@@ -83,10 +85,14 @@ const Login = (props) => {
           return;
         }
     
-        setOpen(false);
+        setSnackbar({
+          ...snackbar,
+          display: false
+        });
       };
 
     const onSubmit = async (values) => {
+        setLoading(true);
         try {
             const user = await axios({
                 method: 'post',
@@ -98,24 +104,19 @@ const Login = (props) => {
                 }
             });
             dispatch(storeLoggedUser(user));
-            setAlertState({
-                error: false,
-                success: true
-            });
-            history.push("/");
-            handleClick();
+            setLoading(true);
+            handleClick('success');
+            setTimeout(()=>{
+                history.push("/");
+            },1500)
         }catch(error) {
-            dispatch(loginError());
-            setAlertState({
-                success: false,
-                error: true
-            });
+            setTimeout(()=>{
+                setLoading(false);
+                handleClick('error')
+            }, 1500)
         }
 
     }
-
-      
-
 
 
     return (
@@ -128,7 +129,7 @@ const Login = (props) => {
 
             <CssBaseline>
                 <Box>
-                <Typography variant="h2" gutterBottom align="center">
+                <Typography variant="h4" gutterBottom align="center">
                     Log In:
                 </Typography>
                 </Box>
@@ -139,6 +140,7 @@ const Login = (props) => {
                         onSubmit={(values, { setSubmitting }) => {
                             onSubmit(values);
                         }}
+                        isSubmitting
                     >
                         {({
                             values,
@@ -193,13 +195,6 @@ const Login = (props) => {
                                         </Grid>
                                         </Grid>
                                     </div>
-                                    {alertState.error ? <Alert severity="error" className={classes.alert}>{error}</Alert> : null }
-                                    {alertState.success ? <Alert severity="success" className={classes.alert}> You've logged in successfully. </Alert> : null }
-                                    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                                        <Alert onClose={handleClose} severity="success">
-                                        This is a success message!
-                                        </Alert>
-                                    </Snackbar>
 
                                     <Box
                                         display='flex' 
@@ -212,8 +207,8 @@ const Login = (props) => {
                                                 variant="contained" 
                                                 color="primary"
                                                 type="submit"
-                                            >
-                                                Log In
+                                            > 
+                                                { loading ? <CircularProgress color="secondary" /> : 'Log In' }
                                             </Button>
                                         </Box>
                                         <Box ml={1}>
@@ -229,6 +224,12 @@ const Login = (props) => {
                                 </form>
                             )}
                     </Formik>
+                    
+                    <Snackbar open={snackbar.display} autoHideDuration={6000} onClose={handleClose}>
+                        <Alert onClose={handleClose} severity={snackbar.severity}>
+                            {snackbar.message}
+                        </Alert>
+                    </Snackbar>
                 </Container>
             </CssBaseline>
             

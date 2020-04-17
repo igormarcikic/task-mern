@@ -113,7 +113,7 @@ const Tasks = () => {
 			exit={{ scale: 0, opacity: 0 }}
 		>
       <Container>
-        <Typography variant="h2" gutterBottom align="center">
+        <Typography variant="h4" gutterBottom align="center">
             Add new task:
         </Typography>
         <hr />
