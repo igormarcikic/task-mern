@@ -17,7 +17,7 @@ import {
 
 const useStyles = makeStyles({
     root: {
-      maxWidth: 345,
+      maxWidth: 500,
       margin: 'auto'
     },
     cardAct: {
@@ -47,7 +47,7 @@ const About = () => {
 			exit={{ scale: 0, opacity: 0 }}
 		>
 
-            <Container>
+            <Container >
                 <Typography variant="h4" gutterBottom align="center">
                     Profile page:
                 </Typography>
@@ -61,7 +61,7 @@ const About = () => {
                         /> */}
                         <CardContent>
                         <Typography gutterBottom variant="h5" component="h2">
-                            {user.name}
+                            Name: <strong>{user.name}</strong>
                         </Typography>
                         <Divider />
                         <Typography variant="body2" component="p">

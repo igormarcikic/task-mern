@@ -23,7 +23,6 @@ router.post('/tasks', auth, async(req,res)=>{
 // Update task
 router.patch('/tasks/:id', auth, async(req,res)=>{
     const updates = Object.keys(req.body);
-    updates.splice(0,2);
     const allowedUpdates = ['title', 'completed', 'description'];
     const isValid = updates.every(update=> allowedUpdates.includes(update));
     if(!isValid) res.status(400).send({error: 'Invalid updates'});

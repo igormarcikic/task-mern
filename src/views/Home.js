@@ -1,4 +1,5 @@
 import React, { useEffect, useContext, useState } from 'react';
+import DialogBox from '../components/helper/TaskDialogBox';
 import { AuthContext } from '../context/auth/AuthContext';
 import { motion } from 'framer-motion';
 import { makeStyles } from '@material-ui/core/styles';
@@ -13,17 +14,19 @@ import {
     IconButton,
     Typography,
     Box,
-    Snackbar
+    Snackbar,
+    ListItemIcon
 } from '@material-ui/core';
 import WorkIcon from '@material-ui/icons/Work';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import MuiAlert from '@material-ui/lab/Alert';
 import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
-    maxWidth: 360,
+    maxWidth: 460,
     backgroundColor: theme.palette.background.paper,
   },
 }));
@@ -32,6 +35,10 @@ const useStyles = makeStyles((theme) => ({
 const Home = () => {
   const classes = useStyles();
   const [ tasks, setTasks ] = useState([]);
+  const [ dialog, setDialog ] = useState({
+    display: false,
+    id: null
+  })
   const [snackbar, setSnackbar] = useState({
     message: null,
     display: false,
@@ -84,6 +91,20 @@ const Home = () => {
         setTasks(newTasks);
         handleClick('success');
     };
+
+    const showDialog = (id) => {
+      setDialog({
+        display: true,
+        id: id
+      })
+    }
+
+    const closeDialog = () => {
+      setDialog({
+        ...dialog,
+        display: false
+      })
+    };
     
     useEffect(()=>{
         const getTasks = async (url) => {
@@ -98,6 +119,25 @@ const Home = () => {
         getTasks('/tasks');
     },[token])
 
+    const updateTask = async (task) => {
+      const newTasks = tasks.filter(t=> t._id !== task._id);
+      newTasks.push(task);
+      setTasks(newTasks);
+      try {
+        await axios({
+          method: 'patch',
+          url: `/tasks/${task._id}`,
+          headers: {'Authorization' : `Bearer ${token}`}, 
+          data: {
+              title: task.title,
+              description: task.description
+          }
+      })
+      handleClick('success');
+      } catch(error) {
+        console.log(error);
+      }
+    }
    
   return (
     <motion.div
@@ -120,9 +160,14 @@ const Home = () => {
                     </Avatar>
                     </ListItemAvatar>
                     <ListItemText primary={task.title} secondary={task.description} />
+                    <ListItemIcon>
+                      <IconButton edge="end" aria-label="delete" onClick={() => showDialog(task._id)}>
+                        <EditIcon color="primary" />
+                      </IconButton>
+                    </ListItemIcon>
                     <ListItemSecondaryAction>
                     <IconButton edge="end" aria-label="delete" onClick={() => deleteTask(task._id)}>
-                      <DeleteIcon />
+                      <DeleteIcon color="error"/>
                     </IconButton>
                   </ListItemSecondaryAction>
                 </ListItem>
@@ -139,6 +184,7 @@ const Home = () => {
         </Alert>
       </Snackbar>
 
+      {dialog.display ? <DialogBox display={dialog.display} id={dialog.id} closeDialog={closeDialog} tasks={tasks} updateTask={updateTask}/> : null }
       </Container>
     </motion.div>
   );

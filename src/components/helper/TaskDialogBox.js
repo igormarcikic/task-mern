@@ -1,138 +1,72 @@
-import React, { useContext, useState } from 'react';
-import { AuthContext } from '../context/auth/AuthContext';
-import { motion } from 'framer-motion';
-import { taskError } from '../context/auth/actions';
+import React,{ useState, useEffect } from 'react';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-    Container,
     Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
     Grid,
-    Typography,
     Box,
-    TextField,
-    Snackbar
+    TextField
 } from '@material-ui/core';
 import TitleIcon from '@material-ui/icons/Title';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
-import MuiAlert from '@material-ui/lab/Alert';
-import axios from 'axios';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-  },
-  formikForm: {
-    width: 500
-  },
-  input: {
-    flex: 1
-  }
-}));
-
 
 //validation schema
 const TaskSchema = Yup.object().shape({
-  title: Yup.string()
-    .required('Required')
-    .max(100, 'Title too long'),
-  description: Yup.string()
-    .required('Required')
-    .min(15, 'Description too short')
-});
-
-const Tasks = () => {
-  const classes = useStyles();
-  const [ tasks, setTasks ] = useState([]);
-  const [snackbar, setSnackbar] = useState({
-    message: null,
-    display: false,
-    severity: null
+    title: Yup.string()
+      .required('Required')
+      .max(100, 'Title too long'),
+    description: Yup.string()
+      .required('Required')
+      .min(15, 'Description too short')
   });
-  const { state: {userData:{token}, error}, dispatch } = useContext(AuthContext);
 
-  const handleClick = (message) => {
-    if(message === 'success') {
-      setSnackbar({
-        message: 'Note created sucessfully.',
-        display: true,
-        severity: 'success'
-      })
-    } 
-
-    if(message === 'error') {
-      setSnackbar({
-        message: 'There was an error.',
-        display: true,
-        severity: 'error'
-      })
+  const useStyles = makeStyles((theme) => ({
+    root: {
+    },
+    margin: {
+        width: 500
+    },
+    input: {
+        flex: 1
     }
-  };
+  }));
 
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
+const DialogBox = ({tasks, display, id, closeDialog, updateTask}) => {
+    const classes = useStyles();
+    const [task, setTask] = useState({});
 
-    setSnackbar({
-      ...snackbar,
-      display: false
-    });
-  };
+    useEffect(()=>{
+        const task = tasks.filter(task=> task._id === id);
+        setTask(task[0]);
+    },[id, tasks])
 
-    const onSubmit = async (values, resetForm) => {
-      try {
-        const task = await axios({
-            method: 'post',
-            url: '/tasks',
-            headers: {'Authorization' : `Bearer ${token}`}, 
-            data: {
-                title: values.title,
-                description: values.description
-            }
-        });
-        const allTasks = [...tasks];
-        allTasks.push(task.data);
-        setTasks(allTasks);
-        resetForm({});
-        handleClick('success');
-    }catch(error) {
-        dispatch(taskError());
-        handleClick('error');
+    const onSubmit = (values, resetForm) => {
+        const updatedTask = {...task};
+        updatedTask.title = values.title;
+        updatedTask.description = values.description;
+        updateTask(updatedTask);
+        closeDialog();
       }
-    }
 
-    const Alert = (props) => {
-      return <MuiAlert elevation={6} variant="filled" {...props} />;
-    }
-
-    const updateTask = (values) => {
-      console.log(values);
-    }
-
-
-  return (
-    <motion.div
-			initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ duration: 0.3 }}
-			exit={{ scale: 0, opacity: 0 }}
-		>
-      <Container>
-        <Typography variant="h4" gutterBottom align="center">
-            Add new task:
-        </Typography>
-        <hr />
-        <Box
-          display='flex' 
-          justifyContent="center"  
-          alignItems="center"
-        >
+    return (
+        <Dialog
+        open={display}
+        onClose={closeDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Update task:"}</DialogTitle>
+        <DialogContent>
           <Formik
-              initialValues={{ title: '', description: '' }}
+              initialValues={{ title: task.title, description: task.description }}
               validationSchema={TaskSchema}
               onSubmit={(values, { resetForm }) => {
-                  onSubmit(values, resetForm);
+                onSubmit(values, resetForm);
               }}
           >
               {({
@@ -146,13 +80,13 @@ const Tasks = () => {
                   resetForm
                   /* and other goodies */
               }) => (
-                      <form onSubmit={handleSubmit} className={classes.formikForm}>
-                          <div >
-                              <Grid container spacing={1} alignItems="flex-end">
+                      <form onSubmit={handleSubmit}>
+                          <div className={classes.margin}>
+                              <Grid container spacing={1} alignItems="flex-end" fullWidth>
                               <Grid item>
                                   <TitleIcon color="primary" />
                               </Grid>
-                              <Grid item className={classes.input}>
+                              <Grid item className={classes.input} >
                                   <TextField 
                                       label="Title:" 
                                       fullWidth
@@ -198,27 +132,27 @@ const Tasks = () => {
                           >
                               <Box mr={1}>
                                   <Button 
-                                      variant="contained" 
                                       color="primary"
                                       type="submit"
                                   >
                                       Add Task
                                   </Button>
+                                    <Button 
+                                        onClick={closeDialog} 
+                                        color="primary"
+                                    >
+                                        Cancel
+                                    </Button>
                               </Box>
                           </Box>
                       </form>
                   )}
             </Formik>
-        </Box>
-
-        <Snackbar open={snackbar.display} autoHideDuration={6000} onClose={handleClose} updateTask={updateTask}>
-        <Alert onClose={handleClose} severity={snackbar.severity}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-      </Container>
-    </motion.div>
-  );
+        </DialogContent>
+        <DialogActions>
+        </DialogActions>
+      </Dialog>
+    )
 }
 
-export default Tasks;
+export default DialogBox;
