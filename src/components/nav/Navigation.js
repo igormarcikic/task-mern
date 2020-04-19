@@ -118,7 +118,7 @@ const Navigation = (props) => {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const { state: {userData:{user, token}}, dispatch } = useContext(AuthContext);
+  const { state: {user, token}, dispatch } = useContext(AuthContext);
 
   const handleDrawerOpen = () => {
     setOpen(true);

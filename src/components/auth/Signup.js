@@ -3,7 +3,7 @@ import { AuthContext } from '../../context/auth/AuthContext';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { motion } from 'framer-motion';
-import { storeLoggedUser, signupError } from '../../context/auth/actions';
+import { storeLoggedUser } from '../../context/auth/actions';
 import { Link, useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -98,7 +98,6 @@ const Signup = (props) => {
             history.push("/");
         }catch(error) {
             console.log(error.message)
-            dispatch(signupError());
             setAlertState({
                 success: false,
                 error: true

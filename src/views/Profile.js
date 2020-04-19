@@ -28,7 +28,7 @@ const useStyles = makeStyles({
   });
 
 const About = () => {
-    const { state: {userData:{user, token}}, dispatch } = useContext(AuthContext);
+    const { state: { user, token } , dispatch } = useContext(AuthContext);
     const classes = useStyles();
     const [ dialog, setDialog ] = useState(false);
 

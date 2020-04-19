@@ -9,27 +9,27 @@ export const UPDATE_USER = 'UPDATE_USER'
 export const storeLoggedUser = (data) => {
     return {
         type: LOGIN,
-        payload: data.data
+        payload: data
     }
 };
 
-export const loginError = () => {
-    return {
-        type: LOGIN_ERROR
-    }
-}
+// export const loginError = () => {
+//     return {
+//         type: LOGIN_ERROR
+//     }
+// }
 
-export const signupError = () => {
-    return {
-        type: SIGNUP_ERROR
-    }
-}
+// export const signupError = () => {
+//     return {
+//         type: SIGNUP_ERROR
+//     }
+// }
 
-export const taskError = () => {
-    return {
-        type: TASK_ERROR
-    }
-}
+// export const taskError = () => {
+//     return {
+//         type: TASK_ERROR
+//     }
+// }
 
 export const logoutUser = () => {
     return {

@@ -48,7 +48,7 @@ const LoginSchema = Yup.object().shape({
 });
 
 const Login = (props) => {
-    const { state: { error }, dispatch } = useContext(AuthContext);
+    const { dispatch } = useContext(AuthContext);
     const [snackbar, setSnackbar] = useState({
         message: null,
         display: false,
@@ -103,8 +103,8 @@ const Login = (props) => {
                     password: values.password
                 }
             });
-            dispatch(storeLoggedUser(user));
-            setLoading(true);
+            dispatch(storeLoggedUser(user.data));
+            setLoading(false);
             handleClick('success');
             history.push("/");
         } catch (error) {

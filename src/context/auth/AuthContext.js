@@ -3,19 +3,16 @@ import reducer from './reducer';
 
 export const AuthContext = createContext();
 const initialState = {
-    userData: {
-        user: null,
-        token: null
-    },
-    error: null
+    user: null,
+    token: null
 };
 
 const Provider = (props) => {
     const [state, dispatch] = useReducer(reducer, initialState);
     return (
-        <AuthContext.Provider value={{state, dispatch}}>
+        <AuthContext.Provider value={{ state, dispatch }}>
             {props.children}
-        </AuthContext.Provider>       
+        </AuthContext.Provider>
     )
 }
 

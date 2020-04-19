@@ -43,7 +43,7 @@ const UpdateSchema = Yup.object().shape({
 
 const UserDialogBox = ({updateMe, showDialog, closeDialog, dialog}) => {
     const classes = useStyles();
-    const { state: {userData:{user}} } = useContext(AuthContext);
+    const { state:{user} } = useContext(AuthContext);
 
     const onSubmit = (values) => {
         const updatedUser = {...user};

@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import { AuthContext } from '../context/auth/AuthContext';
 import SnackMessage from '../components/helper/SnackMessage';
 import { motion } from 'framer-motion';
-import { taskError } from '../context/auth/actions';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Container,
@@ -48,7 +47,7 @@ const Tasks = () => {
     display: false,
     severity: null
   });
-  const { state: { userData: { token }, error }, dispatch } = useContext(AuthContext);
+  const { state: { token } } = useContext(AuthContext);
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -82,7 +81,6 @@ const Tasks = () => {
         severity: 'success'
       })
     } catch (error) {
-      dispatch(taskError());
       setSnackbar({
         message: 'There was an error.',
         display: true,
