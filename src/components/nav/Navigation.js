@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../context/auth/AuthContext';
+import SnackMessage from '../helper/SnackMessage';
 import { Link } from 'react-router-dom';
 import { logoutUser } from '../../context/auth/actions';
 import clsx from 'clsx';
@@ -118,7 +119,7 @@ const Navigation = (props) => {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const { state: {user, token}, dispatch } = useContext(AuthContext);
+  const { state: {user, token}, dispatchAuth } = useContext(AuthContext);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -151,7 +152,7 @@ const logoutHandler = async () => {
     headers: {'Authorization' : `Bearer ${token}`}, 
     data: {}
   });
-  dispatch(logoutUser())
+  dispatchAuth(logoutUser())
 };
 
 
@@ -237,6 +238,8 @@ const logoutHandler = async () => {
         <div className={classes.toolbar} />
             {props.children}
       </main>
+      
+        <SnackMessage />
     </div>
   );
 }

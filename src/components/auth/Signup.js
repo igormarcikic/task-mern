@@ -1,9 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../../context/auth/AuthContext';
+import { SnackContext } from '../../context/snackbar/SnackContext';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { motion } from 'framer-motion';
-import { storeLoggedUser } from '../../context/auth/actions';
+import { storeNewUser } from '../../context/auth/actions';
+import { setLoginMessage } from '../../context/snackbar/actions';
 import { Link, useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -13,13 +15,13 @@ import {
     TextField,
     Box,
     Button,
-    Typography
+    Typography,
+    CircularProgress
 } from '@material-ui/core';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import EmailIcon from '@material-ui/icons/Email';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import DialpadIcon from '@material-ui/icons/Dialpad';
-import MuiAlert from '@material-ui/lab/Alert';
 import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
@@ -55,27 +57,11 @@ const SignupSchema = Yup.object().shape({
 
 
 const Signup = (props) => {
-    const { state, dispatch } = useContext(AuthContext);
-    const [alertState, setAlertState] = useState({
-        success: false,
-        error: false
-    })
+    const { dispatchAuth } = useContext(AuthContext);
+    const { dispatchSnack } = useContext(SnackContext);
+    const [loading, setLoading] = useState(false);
     const history = useHistory();
     const classes = useStyles();
-
-    useEffect(()=>{
-        setAlertState({
-            error: false,
-            success: false
-        });
-
-        return function() {
-            setAlertState({
-                error: false,
-                success: false
-            });
-          };
-    },[]);
 
     const onSubmit = async (values) => {
         try {
@@ -90,26 +76,18 @@ const Signup = (props) => {
                     age: values.age
                 }
             });
-            dispatch(storeLoggedUser(user));
-            setAlertState({
-                error: false,
-                success: true
-            });
+            dispatchAuth(storeNewUser(user.data));
+            dispatchSnack(setLoginMessage({
+                message: 'Signed up sucessfully.',
+                display: true,
+                severity: 'success'
+            }));
             history.push("/");
         }catch(error) {
-            console.log(error.message)
-            setAlertState({
-                success: false,
-                error: true
-            });
+            setLoading(false);
         }
 
     }
-
-      const Alert = (props) => {
-        return <MuiAlert elevation={6} variant="filled" {...props} />;
-      }
-
 
 
     return (
@@ -229,8 +207,6 @@ const Signup = (props) => {
                                         </Grid>
                                         </Grid>
                                     </div>
-                                    {alertState.error ? <Alert severity="error" className={classes.alert}>{state.error}</Alert> : null }
-                                    {alertState.success ? <Alert severity="success" className={classes.alert}> You've logged in successfully. </Alert> : null }
                                     <Box
                                         display='flex' 
                                         justifyContent="center"  
@@ -243,7 +219,7 @@ const Signup = (props) => {
                                                 color="primary"
                                                 type="submit"
                                             >
-                                                Sign up
+                                                {loading ? <CircularProgress color="secondary" /> : 'Sign Up'}
                                             </Button>
                                         </Box>
                                         <Box ml={1}>

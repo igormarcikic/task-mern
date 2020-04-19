@@ -4,11 +4,14 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import AuthProvider from './context/auth/AuthContext';
+import SnackProvider from './context/snackbar/SnackContext';
 
 ReactDOM.render(
   <React.StrictMode>
     <AuthProvider>
-      <App />
+      <SnackProvider>
+        <App />
+      </SnackProvider>
     </AuthProvider>
   </React.StrictMode>,
   document.getElementById('root')

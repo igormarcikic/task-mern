@@ -1,7 +1,8 @@
-import { LOGIN, LOGOUT, DELETE, UPDATE_USER } from './actions';
+import { SIGNUP, LOGIN, LOGOUT, DELETE, UPDATE_USER } from './actions';
 
 const reducer = (state, action) => {
     switch(action.type) {
+        case SIGNUP:
         case LOGIN:
             return {
                 user: action.payload.user,

@@ -1,9 +1,11 @@
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../../context/auth/AuthContext';
+import { SnackContext } from '../../context/snackbar/SnackContext';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { motion } from 'framer-motion';
 import { storeLoggedUser } from '../../context/auth/actions';
+import { setLoginMessage } from '../../context/snackbar/actions';
 import { Link, useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -14,12 +16,10 @@ import {
     Box,
     Button,
     Typography,
-    Snackbar,
     CircularProgress
 } from '@material-ui/core';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import EmailIcon from '@material-ui/icons/Email';
-import MuiAlert from '@material-ui/lab/Alert';
 import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
@@ -48,48 +48,11 @@ const LoginSchema = Yup.object().shape({
 });
 
 const Login = (props) => {
-    const { dispatch } = useContext(AuthContext);
-    const [snackbar, setSnackbar] = useState({
-        message: null,
-        display: false,
-        severity: null
-    });
+    const { dispatchAuth } = useContext(AuthContext);
+    const { dispatchSnack } = useContext(SnackContext);
     const [loading, setLoading] = useState(false);
     const history = useHistory();
     const classes = useStyles();
-
-    const Alert = (props) => {
-        return <MuiAlert elevation={6} variant="filled" {...props} />;
-    }
-
-    const handleClick = (message) => {
-        if (message === 'success') {
-            setSnackbar({
-                message: 'Logged in sucessfully.',
-                display: true,
-                severity: 'success'
-            })
-        }
-
-        if (message === 'error') {
-            setSnackbar({
-                message: 'There has been an authentication error.',
-                display: true,
-                severity: 'error'
-            })
-        }
-    };
-
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        setSnackbar({
-            ...snackbar,
-            display: false
-        });
-    };
 
     const onSubmit = async (values) => {
         setLoading(true);
@@ -103,13 +66,16 @@ const Login = (props) => {
                     password: values.password
                 }
             });
-            dispatch(storeLoggedUser(user.data));
+            dispatchAuth(storeLoggedUser(user.data));
             setLoading(false);
-            handleClick('success');
+            dispatchSnack(setLoginMessage({
+                message: 'Logged in sucessfully.',
+                display: true,
+                severity: 'success'
+            }))
             history.push("/");
         } catch (error) {
             setLoading(false);
-            handleClick('error')
         }
 
     }
@@ -221,11 +187,11 @@ const Login = (props) => {
                             )}
                     </Formik>
 
-                    <Snackbar open={snackbar.display} autoHideDuration={6000} onClose={handleClose}>
+                    {/* <Snackbar open={snackbar.display} autoHideDuration={6000} onClose={handleClose}>
                         <Alert onClose={handleClose} severity={snackbar.severity}>
                             {snackbar.message}
                         </Alert>
-                    </Snackbar>
+                    </Snackbar> */}
                 </Container>
             </CssBaseline>
 

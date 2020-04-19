@@ -2,6 +2,8 @@ import React, { useContext, useState } from 'react';
 import UserDialogBox from '../components/helper/UserDialogBox';
 import { storeUpdatedUser } from '../context/auth/actions';
 import { AuthContext } from '../context/auth/AuthContext';
+import { SnackContext } from '../context/snackbar/SnackContext';
+import { setUpdatedUserMessage } from '../context/snackbar/actions';
 import { deleteUser } from '../context/auth/actions';
 import { motion } from 'framer-motion';
 import { makeStyles } from '@material-ui/core/styles';
@@ -28,7 +30,8 @@ const useStyles = makeStyles({
   });
 
 const About = () => {
-    const { state: { user, token } , dispatch } = useContext(AuthContext);
+    const { state: { user, token } , dispatchAuth } = useContext(AuthContext);
+    const { dispatchSnack } = useContext(SnackContext);
     const classes = useStyles();
     const [ dialog, setDialog ] = useState(false);
 
@@ -39,7 +42,7 @@ const About = () => {
             headers: {"Authorization" : `Bearer ${token}`}, 
             data: {}
         })
-        dispatch(deleteUser())
+        dispatchAuth(deleteUser())
     }
 
     const updateMe = async (user) => {
@@ -54,7 +57,12 @@ const About = () => {
                     age: user.age
                 }
             });
-            dispatch(storeUpdatedUser(updatedUser.data, token));
+            dispatchAuth(storeUpdatedUser(updatedUser.data, token));
+            dispatchSnack(setUpdatedUserMessage({
+                message: 'User Updated sucessfully.',
+                display: true,
+                severity: 'success'
+            }));
         }catch(error) {
             console.log(error.message)
         }

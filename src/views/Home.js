@@ -1,6 +1,8 @@
 import React, { useEffect, useContext, useState } from 'react';
 import DialogBox from '../components/helper/TaskDialogBox';
 import { AuthContext } from '../context/auth/AuthContext';
+import { SnackContext } from '../context/snackbar/SnackContext';
+import { setTaskMessage } from '../context/snackbar/actions';
 import { motion } from 'framer-motion';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -20,7 +22,6 @@ import {
 import WorkIcon from '@material-ui/icons/Work';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import MuiAlert from '@material-ui/lab/Alert';
 import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
@@ -39,45 +40,9 @@ const Home = () => {
     display: false,
     id: null
   })
-  const [snackbar, setSnackbar] = useState({
-    message: null,
-    display: false,
-    severity: null
-  });
   const { state: { token } } = useContext(AuthContext);
+  const { dispatchSnack } = useContext(SnackContext);
 
-  const handleClick = (message) => {
-    if (message === 'success') {
-      setSnackbar({
-        message: 'Note deleted sucessfully.',
-        display: true,
-        severity: 'success'
-      })
-    }
-
-    if (message === 'error') {
-      setSnackbar({
-        message: 'There was an error.',
-        display: true,
-        severity: 'error'
-      })
-    }
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setSnackbar({
-      ...snackbar,
-      display: false
-    });
-  };
-
-  const Alert = (props) => {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-  }
 
   const deleteTask = async (id) => {
     await axios({
@@ -89,7 +54,11 @@ const Home = () => {
     let newTasks = [...tasks];
     newTasks = newTasks.filter(task => task._id !== id);
     setTasks(newTasks);
-    handleClick('success');
+    dispatchSnack(setTaskMessage({
+      message: 'Task deleted sucessfully.',
+      display: true,
+      severity: 'success'
+    }));
   };
 
   const showDialog = (id) => {
@@ -133,7 +102,11 @@ const Home = () => {
           description: task.description
         }
       })
-      handleClick('success');
+      dispatchSnack(setTaskMessage({
+        message: 'Task updated sucessfully.',
+        display: true,
+        severity: 'success'
+      }))
     } catch (error) {
       console.log(error);
     }
@@ -177,12 +150,6 @@ const Home = () => {
             </Typography>
             </Box>}
         </List>
-
-        <Snackbar open={snackbar.display} autoHideDuration={6000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity={snackbar.severity}>
-            {snackbar.message}
-          </Alert>
-        </Snackbar>
 
         {dialog.display ? <DialogBox display={dialog.display} id={dialog.id} closeDialog={closeDialog} tasks={tasks} updateTask={updateTask} /> : null}
       </Container>

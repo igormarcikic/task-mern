@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../context/auth/AuthContext';
-import SnackMessage from '../components/helper/SnackMessage';
+import { SnackContext } from '../context/snackbar/SnackContext';
+import { setTaskMessage } from '../context/snackbar/actions';
 import { motion } from 'framer-motion';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -42,24 +43,10 @@ const TaskSchema = Yup.object().shape({
 const Tasks = () => {
   const classes = useStyles();
   const [tasks, setTasks] = useState([]);
-  const [snackbar, setSnackbar] = useState({
-    message: null,
-    display: false,
-    severity: null
-  });
   const { state: { token } } = useContext(AuthContext);
+  const { dispatchSnack } = useContext(SnackContext);
 
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setSnackbar({
-      ...snackbar,
-      display: false
-    });
-  };
-
+ 
   const onSubmit = async (values, resetForm) => {
     try {
       const task = await axios({
@@ -75,17 +62,12 @@ const Tasks = () => {
       allTasks.push(task.data);
       setTasks(allTasks);
       resetForm({});
-      setSnackbar({
+      dispatchSnack(setTaskMessage({
         message: 'Task created sucessfully.',
         display: true,
         severity: 'success'
-      })
+      }))
     } catch (error) {
-      setSnackbar({
-        message: 'There was an error.',
-        display: true,
-        severity: 'error'
-      })
     }
   }
 
@@ -190,7 +172,6 @@ const Tasks = () => {
               )}
           </Formik>
         </Box>
-        <SnackMessage message={snackbar.message} display={snackbar.display} severity={snackbar.severity} handleClose={handleClose} />
       </Container>
     </motion.div>
   );
