@@ -106,10 +106,6 @@ const Tasks = () => {
       return <MuiAlert elevation={6} variant="filled" {...props} />;
     }
 
-    const updateTask = (values) => {
-      console.log(values);
-    }
-
 
   return (
     <motion.div
@@ -211,7 +207,7 @@ const Tasks = () => {
             </Formik>
         </Box>
 
-        <Snackbar open={snackbar.display} autoHideDuration={6000} onClose={handleClose} updateTask={updateTask}>
+        <Snackbar open={snackbar.display} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity={snackbar.severity}>
           {snackbar.message}
         </Alert>

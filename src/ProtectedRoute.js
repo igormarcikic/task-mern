@@ -7,6 +7,7 @@ const ProtectedRoute = ({component: Component, ...rest}) => {
 
     const isLoggedIn = () => user.tokens.includes(token);
 
+
     return (
         <Route
             {...rest}

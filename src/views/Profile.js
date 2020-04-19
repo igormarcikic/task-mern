@@ -1,4 +1,6 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
+import UserDialogBox from '../components/helper/UserDialogBox';
+import { storeUpdatedUser } from '../context/auth/actions';
 import { AuthContext } from '../context/auth/AuthContext';
 import { deleteUser } from '../context/auth/actions';
 import { motion } from 'framer-motion';
@@ -28,6 +30,7 @@ const useStyles = makeStyles({
 const About = () => {
     const { state: {userData:{user, token}}, dispatch } = useContext(AuthContext);
     const classes = useStyles();
+    const [ dialog, setDialog ] = useState(false);
 
     const deleteMe = async () => {
         await axios({
@@ -38,6 +41,32 @@ const About = () => {
         })
         dispatch(deleteUser())
     }
+
+    const updateMe = async (user) => {
+        try {
+            const updatedUser = await axios({
+                method: 'patch',
+                url: '/users/me',
+                headers: {'Authorization' : `Bearer ${token}`}, 
+                data: {
+                    email: user.email,
+                    name: user.name,
+                    age: user.age
+                }
+            });
+            dispatch(storeUpdatedUser(updatedUser.data, token));
+        }catch(error) {
+            console.log(error.message)
+        }
+    }
+
+    const showDialog = () => {
+        setDialog(true)
+      }
+  
+      const closeDialog = () => {
+        setDialog(false)
+      };
 
     return (
         <motion.div
@@ -77,12 +106,20 @@ const About = () => {
                         <Button 
                             color="primary" 
                             variant="contained"
+                            onClick={showDialog}
+                        >
+                            Update
+                        </Button>
+                        <Button 
+                            color="secondary" 
+                            variant="contained"
                             onClick={deleteMe}
                         >
                             Delete
                         </Button>
                     </CardActions>
                 </Card>
+                { dialog ? <UserDialogBox updateMe={updateMe} showDialog={showDialog} closeDialog={closeDialog} dialog={dialog} /> : null }
             </Container>
         </motion.div>
     )

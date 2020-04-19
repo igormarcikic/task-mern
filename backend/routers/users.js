@@ -54,7 +54,7 @@ router.patch('/users/me', auth, async(req,res)=>{
     try {
         updates.forEach(update=> req.user[update] = req.body[update]);
         await req.user.save();
-        res.send(req.user);
+        res.send({user: req.user, token: req.token});
     }catch(error) {
         res.status(400).send();
     }

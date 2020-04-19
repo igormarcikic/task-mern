@@ -1,4 +1,4 @@
-import { LOGIN, LOGIN_ERROR, LOGOUT, DELETE, SIGNUP_ERROR, TASK_ERROR } from './actions';
+import { LOGIN, LOGIN_ERROR, LOGOUT, DELETE, SIGNUP_ERROR, TASK_ERROR, UPDATE_USER } from './actions';
 
 const reducer = (state, action) => {
     switch(action.type) {
@@ -29,6 +29,11 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 error: 'Failed to create a task, please try again'
+            }
+        case UPDATE_USER:
+            return {
+                ...state,
+                userData: action.payload
             }
         default: {
             return state;

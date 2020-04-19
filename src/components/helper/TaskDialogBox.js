@@ -45,7 +45,7 @@ const DialogBox = ({tasks, display, id, closeDialog, updateTask}) => {
         setTask(task[0]);
     },[id, tasks])
 
-    const onSubmit = (values, resetForm) => {
+    const onSubmit = (values) => {
         const updatedTask = {...task};
         updatedTask.title = values.title;
         updatedTask.description = values.description;
@@ -65,8 +65,8 @@ const DialogBox = ({tasks, display, id, closeDialog, updateTask}) => {
           <Formik
               initialValues={{ title: task.title, description: task.description }}
               validationSchema={TaskSchema}
-              onSubmit={(values, { resetForm }) => {
-                onSubmit(values, resetForm);
+              onSubmit={(values) => {
+                onSubmit(values);
               }}
           >
               {({
@@ -82,7 +82,7 @@ const DialogBox = ({tasks, display, id, closeDialog, updateTask}) => {
               }) => (
                       <form onSubmit={handleSubmit}>
                           <div className={classes.margin}>
-                              <Grid container spacing={1} alignItems="flex-end" fullWidth>
+                              <Grid container spacing={1} alignItems="flex-end">
                               <Grid item>
                                   <TitleIcon color="primary" />
                               </Grid>
@@ -135,7 +135,7 @@ const DialogBox = ({tasks, display, id, closeDialog, updateTask}) => {
                                       color="primary"
                                       type="submit"
                                   >
-                                      Add Task
+                                      Update Task
                                   </Button>
                                     <Button 
                                         onClick={closeDialog} 

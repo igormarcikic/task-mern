@@ -214,7 +214,7 @@ const Login = (props) => {
                                         <Box ml={1}>
                                             <Button 
                                                 variant="contained" 
-                                                color="secondary" 
+                                                color="default" 
                                                 component={Link} to='/signup'
                                             >
                                                 Sign Up

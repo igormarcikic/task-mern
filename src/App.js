@@ -9,12 +9,12 @@ import Tasks from './views/Tasks';
 import ProtectedRoute from './ProtectedRoute';
 import { AnimatePresence } from 'framer-motion';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { orange, blueGrey, amber } from '@material-ui/core/colors';
+import { orange, amber, red } from '@material-ui/core/colors';
 
 const theme = createMuiTheme({
   palette: {
     primary: amber,
-    secondary: blueGrey,
+    secondary: red,
   },
   status: {
     danger: orange
