@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState } from 'react';
 import DialogBox from '../components/helper/TaskDialogBox';
 import { AuthContext } from '../context/auth/AuthContext';
 import { SnackContext } from '../context/snackbar/SnackContext';
-import { setTaskMessage } from '../context/snackbar/actions';
+import { setSnackMessage } from '../context/snackbar/actions';
 import { motion } from 'framer-motion';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -16,7 +16,6 @@ import {
   IconButton,
   Typography,
   Box,
-  Snackbar,
   ListItemIcon
 } from '@material-ui/core';
 import WorkIcon from '@material-ui/icons/Work';
@@ -54,7 +53,7 @@ const Home = () => {
     let newTasks = [...tasks];
     newTasks = newTasks.filter(task => task._id !== id);
     setTasks(newTasks);
-    dispatchSnack(setTaskMessage({
+    dispatchSnack(setSnackMessage({
       message: 'Task deleted sucessfully.',
       display: true,
       severity: 'success'
@@ -102,7 +101,7 @@ const Home = () => {
           description: task.description
         }
       })
-      dispatchSnack(setTaskMessage({
+      dispatchSnack(setSnackMessage({
         message: 'Task updated sucessfully.',
         display: true,
         severity: 'success'

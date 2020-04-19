@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { motion } from 'framer-motion';
 import { storeLoggedUser } from '../../context/auth/actions';
-import { setLoginMessage } from '../../context/snackbar/actions';
+import { setSnackMessage } from '../../context/snackbar/actions';
 import { Link, useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -68,7 +68,7 @@ const Login = (props) => {
             });
             dispatchAuth(storeLoggedUser(user.data));
             setLoading(false);
-            dispatchSnack(setLoginMessage({
+            dispatchSnack(setSnackMessage({
                 message: 'Logged in sucessfully.',
                 display: true,
                 severity: 'success'

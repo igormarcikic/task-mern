@@ -1,11 +1,11 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { AuthContext } from '../../context/auth/AuthContext';
 import { SnackContext } from '../../context/snackbar/SnackContext';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { motion } from 'framer-motion';
 import { storeNewUser } from '../../context/auth/actions';
-import { setLoginMessage } from '../../context/snackbar/actions';
+import { setSnackMessage } from '../../context/snackbar/actions';
 import { Link, useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -77,7 +77,7 @@ const Signup = (props) => {
                 }
             });
             dispatchAuth(storeNewUser(user.data));
-            dispatchSnack(setLoginMessage({
+            dispatchSnack(setSnackMessage({
                 message: 'Signed up sucessfully.',
                 display: true,
                 severity: 'success'

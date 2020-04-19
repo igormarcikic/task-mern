@@ -1,20 +1,8 @@
-import { LOGIN_MESSAGE, CLOSE_SNACK, TASK_MESSAGE, UPDATED_USER } from './actions';
+import { SNACK_MESSAGE, CLOSE_SNACK } from './actions';
 
 const reducer = (state, action) => {
     switch(action.type) {
-        case LOGIN_MESSAGE:
-            return {
-                message: action.payload.message,
-                display: action.payload.display,
-                severity: action.payload.severity
-            }
-        case TASK_MESSAGE:
-            return {
-                message: action.payload.message,
-                display: action.payload.display,
-                severity: action.payload.severity
-            }
-        case UPDATED_USER:
+        case SNACK_MESSAGE:
             return {
                 message: action.payload.message,
                 display: action.payload.display,

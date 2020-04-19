@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../context/auth/AuthContext';
 import { SnackContext } from '../context/snackbar/SnackContext';
-import { setTaskMessage } from '../context/snackbar/actions';
+import { setSnackMessage } from '../context/snackbar/actions';
 import { motion } from 'framer-motion';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -62,7 +62,7 @@ const Tasks = () => {
       allTasks.push(task.data);
       setTasks(allTasks);
       resetForm({});
-      dispatchSnack(setTaskMessage({
+      dispatchSnack(setSnackMessage({
         message: 'Task created sucessfully.',
         display: true,
         severity: 'success'

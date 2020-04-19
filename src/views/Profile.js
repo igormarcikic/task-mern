@@ -3,7 +3,7 @@ import UserDialogBox from '../components/helper/UserDialogBox';
 import { storeUpdatedUser } from '../context/auth/actions';
 import { AuthContext } from '../context/auth/AuthContext';
 import { SnackContext } from '../context/snackbar/SnackContext';
-import { setUpdatedUserMessage } from '../context/snackbar/actions';
+import { setSnackMessage } from '../context/snackbar/actions';
 import { deleteUser } from '../context/auth/actions';
 import { motion } from 'framer-motion';
 import { makeStyles } from '@material-ui/core/styles';
@@ -58,7 +58,7 @@ const About = () => {
                 }
             });
             dispatchAuth(storeUpdatedUser(updatedUser.data, token));
-            dispatchSnack(setUpdatedUserMessage({
+            dispatchSnack(setSnackMessage({
                 message: 'User Updated sucessfully.',
                 display: true,
                 severity: 'success'
