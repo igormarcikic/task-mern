@@ -76,6 +76,11 @@ const Login = (props) => {
             history.push("/");
         } catch (error) {
             setLoading(false);
+            dispatchSnack(setSnackMessage({
+                message: 'Login failed, try again.',
+                display: true,
+                severity: 'error'
+            }));
         }
 
     }

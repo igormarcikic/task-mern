@@ -107,7 +107,11 @@ const Home = () => {
         severity: 'success'
       }))
     } catch (error) {
-      console.log(error);
+      dispatchSnack(setSnackMessage({
+          message: 'Task update failed.',
+          display: true,
+          severity: 'error'
+      }));
     }
   }
 

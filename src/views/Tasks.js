@@ -68,6 +68,11 @@ const Tasks = () => {
         severity: 'success'
       }))
     } catch (error) {
+      dispatchSnack(setSnackMessage({
+          message: 'Task creation failed.',
+          display: true,
+          severity: 'error'
+      }));
     }
   }
 

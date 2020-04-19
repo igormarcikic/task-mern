@@ -42,7 +42,12 @@ const About = () => {
             headers: {"Authorization" : `Bearer ${token}`}, 
             data: {}
         })
-        dispatchAuth(deleteUser())
+        dispatchAuth(deleteUser());
+        dispatchSnack(setSnackMessage({
+            message: 'User deleted sucessfully.',
+            display: true,
+            severity: 'success'
+        }))
     }
 
     const updateMe = async (user) => {
@@ -59,7 +64,7 @@ const About = () => {
             });
             dispatchAuth(storeUpdatedUser(updatedUser.data, token));
             dispatchSnack(setSnackMessage({
-                message: 'User Updated sucessfully.',
+                message: 'User updated sucessfully.',
                 display: true,
                 severity: 'success'
             }));

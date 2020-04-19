@@ -85,6 +85,11 @@ const Signup = (props) => {
             history.push("/");
         }catch(error) {
             setLoading(false);
+            dispatchSnack(setSnackMessage({
+                message: 'Signup failed, try again.',
+                display: true,
+                severity: 'error'
+            }));
         }
 
     }
