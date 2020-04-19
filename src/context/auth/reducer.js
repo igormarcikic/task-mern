@@ -12,7 +12,8 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 userData: {
-                    user: null
+                    user: null,
+                    token: null
                 }
             }
         case LOGIN_ERROR:

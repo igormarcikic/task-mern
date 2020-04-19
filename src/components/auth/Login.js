@@ -3,7 +3,7 @@ import { AuthContext } from '../../context/auth/AuthContext';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { motion } from 'framer-motion';
-import { storeLoggedUser, loginError } from '../../context/auth/actions';
+import { storeLoggedUser } from '../../context/auth/actions';
 import { Link, useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -15,7 +15,7 @@ import {
     Button,
     Typography,
     Snackbar,
-    CircularProgress 
+    CircularProgress
 } from '@material-ui/core';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import EmailIcon from '@material-ui/icons/Email';
@@ -24,16 +24,16 @@ import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
     margin: {
-      margin: theme.spacing(1),
+        margin: theme.spacing(1),
     },
     input: {
-        flex:1
+        flex: 1
     },
     alert: {
         maxWidth: 300,
         margin: '30px auto 0'
     }
-  }));
+}));
 
 //validation schema
 const LoginSchema = Yup.object().shape({
@@ -48,11 +48,11 @@ const LoginSchema = Yup.object().shape({
 });
 
 const Login = (props) => {
-    const { state: {error}, dispatch } = useContext(AuthContext);
+    const { state: { error }, dispatch } = useContext(AuthContext);
     const [snackbar, setSnackbar] = useState({
-      message: null,
-      display: false,
-      severity: null
+        message: null,
+        display: false,
+        severity: null
     });
     const [loading, setLoading] = useState(false);
     const history = useHistory();
@@ -60,36 +60,36 @@ const Login = (props) => {
 
     const Alert = (props) => {
         return <MuiAlert elevation={6} variant="filled" {...props} />;
-      }
+    }
 
-      const handleClick = (message) => {
-        if(message === 'success') {
-          setSnackbar({
-            message: 'Logged in sucessfully.',
-            display: true,
-            severity: 'success'
-          })
-        } 
-    
-        if(message === 'error') {
-          setSnackbar({
-            message: 'There has been an authentication error.',
-            display: true,
-            severity: 'error'
-          })
+    const handleClick = (message) => {
+        if (message === 'success') {
+            setSnackbar({
+                message: 'Logged in sucessfully.',
+                display: true,
+                severity: 'success'
+            })
         }
-      };
-    
-      const handleClose = (event, reason) => {
+
+        if (message === 'error') {
+            setSnackbar({
+                message: 'There has been an authentication error.',
+                display: true,
+                severity: 'error'
+            })
+        }
+    };
+
+    const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
-          return;
+            return;
         }
-    
+
         setSnackbar({
-          ...snackbar,
-          display: false
+            ...snackbar,
+            display: false
         });
-      };
+    };
 
     const onSubmit = async (values) => {
         setLoading(true);
@@ -97,7 +97,7 @@ const Login = (props) => {
             const user = await axios({
                 method: 'post',
                 url: '/users/login',
-                headers: {}, 
+                headers: {},
                 data: {
                     email: values.email,
                     password: values.password
@@ -106,14 +106,10 @@ const Login = (props) => {
             dispatch(storeLoggedUser(user));
             setLoading(true);
             handleClick('success');
-            setTimeout(()=>{
-                history.push("/");
-            },1500)
-        }catch(error) {
-            setTimeout(()=>{
-                setLoading(false);
-                handleClick('error')
-            }, 1500)
+            history.push("/");
+        } catch (error) {
+            setLoading(false);
+            handleClick('error')
         }
 
     }
@@ -121,16 +117,16 @@ const Login = (props) => {
 
     return (
         <motion.div
-			initial={{ scale: 0, opacity: 0 }}
+            initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3 }}
-			exit={{ scale: 0, opacity: 0 }}
-		>
+            exit={{ scale: 0, opacity: 0 }}
+        >
 
             <CssBaseline>
                 <Box>
-                <Typography variant="h4" gutterBottom align="center">
-                    Log In:
+                    <Typography variant="h4" gutterBottom align="center">
+                        Log In:
                 </Typography>
                 </Box>
                 <Container maxWidth="sm">
@@ -155,66 +151,66 @@ const Login = (props) => {
                                 <form onSubmit={handleSubmit}>
                                     <div className={classes.margin}>
                                         <Grid container spacing={1} alignItems="flex-end">
-                                        <Grid item>
-                                            <EmailIcon color="primary" />
-                                        </Grid>
-                                        <Grid item className={classes.input}>
-                                            <TextField 
-                                                label="Email:" 
-                                                fullWidth
-                                                type="email"
-                                                name="email"
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.email}
-                                                helperText={errors.email && touched.email && errors.email}
-                                                error={(errors.email && touched.email && errors.email) ? true : false}
-                                            />
-                                        </Grid>
+                                            <Grid item>
+                                                <EmailIcon color="primary" />
+                                            </Grid>
+                                            <Grid item className={classes.input}>
+                                                <TextField
+                                                    label="Email:"
+                                                    fullWidth
+                                                    type="email"
+                                                    name="email"
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                    value={values.email}
+                                                    helperText={errors.email && touched.email && errors.email}
+                                                    error={(errors.email && touched.email && errors.email) ? true : false}
+                                                />
+                                            </Grid>
                                         </Grid>
                                     </div>
-                                    
+
                                     <div className={classes.margin}>
                                         <Grid container spacing={1} alignItems="flex-end">
-                                        <Grid item>
-                                            <VisibilityOffIcon color="primary" />
-                                        </Grid>
-                                        <Grid item className={classes.input}>
-                                            <TextField 
-                                                autoComplete="on"
-                                                label="Password:" 
-                                                fullWidth
-                                                type="password"
-                                                name="password"
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.password}
-                                                helperText={errors.password && touched.password && errors.password}
-                                                error={(errors.password && touched.password && errors.password) ? true : false}
-                                            />
-                                        </Grid>
+                                            <Grid item>
+                                                <VisibilityOffIcon color="primary" />
+                                            </Grid>
+                                            <Grid item className={classes.input}>
+                                                <TextField
+                                                    autoComplete="on"
+                                                    label="Password:"
+                                                    fullWidth
+                                                    type="password"
+                                                    name="password"
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                    value={values.password}
+                                                    helperText={errors.password && touched.password && errors.password}
+                                                    error={(errors.password && touched.password && errors.password) ? true : false}
+                                                />
+                                            </Grid>
                                         </Grid>
                                     </div>
 
                                     <Box
-                                        display='flex' 
-                                        justifyContent="center"  
+                                        display='flex'
+                                        justifyContent="center"
                                         alignItems="center"
                                         mt={3}
                                     >
                                         <Box mr={1}>
-                                            <Button 
-                                                variant="contained" 
+                                            <Button
+                                                variant="contained"
                                                 color="primary"
                                                 type="submit"
-                                            > 
-                                                { loading ? <CircularProgress color="secondary" /> : 'Log In' }
+                                            >
+                                                {loading ? <CircularProgress color="secondary" /> : 'Log In'}
                                             </Button>
                                         </Box>
                                         <Box ml={1}>
-                                            <Button 
-                                                variant="contained" 
-                                                color="default" 
+                                            <Button
+                                                variant="contained"
+                                                color="default"
                                                 component={Link} to='/signup'
                                             >
                                                 Sign Up
@@ -224,7 +220,7 @@ const Login = (props) => {
                                 </form>
                             )}
                     </Formik>
-                    
+
                     <Snackbar open={snackbar.display} autoHideDuration={6000} onClose={handleClose}>
                         <Alert onClose={handleClose} severity={snackbar.severity}>
                             {snackbar.message}
@@ -232,7 +228,7 @@ const Login = (props) => {
                     </Snackbar>
                 </Container>
             </CssBaseline>
-            
+
         </motion.div>
     )
 };
