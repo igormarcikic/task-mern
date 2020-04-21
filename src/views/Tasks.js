@@ -17,6 +17,7 @@ import TextFieldsIcon from '@material-ui/icons/TextFields';
 import axios from 'axios';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { axiosConfig } from '../config/axiosConfig';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,6 +46,8 @@ const Tasks = () => {
   const [tasks, setTasks] = useState([]);
   const { state: { token } } = useContext(AuthContext);
   const { dispatchSnack } = useContext(SnackContext);
+
+  axiosConfig(axios, token);
 
  
   const onSubmit = async (values, resetForm) => {

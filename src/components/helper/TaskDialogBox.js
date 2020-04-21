@@ -41,7 +41,7 @@ const DialogBox = ({tasks, display, id, closeDialog, updateTask}) => {
     const [task, setTask] = useState({});
 
     useEffect(()=>{
-        const task = tasks.filter(task=> task._id === id);
+        const task = tasks.docs.filter(task=> task._id === id);
         setTask(task[0]);
     },[id, tasks])
 

@@ -18,6 +18,7 @@ import {
     Button, 
     Divider
 } from '@material-ui/core';
+import { axiosConfig } from '../config/axiosConfig';
 
 const useStyles = makeStyles({
     root: {
@@ -34,12 +35,13 @@ const About = () => {
     const { dispatchSnack } = useContext(SnackContext);
     const classes = useStyles();
     const [ dialog, setDialog ] = useState(false);
+    axiosConfig(axios, token)
 
     const deleteMe = async () => {
         await axios({
             method: 'delete',
             url: '/users/me',
-            headers: {"Authorization" : `Bearer ${token}`}, 
+            headers: {}, 
             data: {}
         })
         dispatchAuth(deleteUser());
@@ -55,7 +57,7 @@ const About = () => {
             const updatedUser = await axios({
                 method: 'patch',
                 url: '/users/me',
-                headers: {'Authorization' : `Bearer ${token}`}, 
+                headers: {}, 
                 data: {
                     email: user.email,
                     name: user.name,

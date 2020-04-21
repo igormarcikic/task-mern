@@ -1,5 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react';
 import DialogBox from '../components/helper/TaskDialogBox';
+import PaginationComponent from '../components/pagination/PaginationComponent';
 import { AuthContext } from '../context/auth/AuthContext';
 import { SnackContext } from '../context/snackbar/SnackContext';
 import { setSnackMessage } from '../context/snackbar/actions';
@@ -16,12 +17,16 @@ import {
   IconButton,
   Typography,
   Box,
-  ListItemIcon
+  ListItemIcon,
+  Button
 } from '@material-ui/core';
 import WorkIcon from '@material-ui/icons/Work';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import VerticalAlignBottomIcon from '@material-ui/icons/VerticalAlignBottom';
+import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
 import axios from 'axios';
+import { axiosConfig } from '../config/axiosConfig';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,25 +39,29 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = () => {
   const classes = useStyles();
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState({});
   const [dialog, setDialog] = useState({
     display: false,
     id: null
-  })
+  });
+  const [ page, setPage ] = useState(1);
+  const [ order, setOrder ] = useState('asc');
   const { state: { token } } = useContext(AuthContext);
   const { dispatchSnack } = useContext(SnackContext);
+
+  axiosConfig(axios, token)
 
 
   const deleteTask = async (id) => {
     await axios({
       method: 'delete',
       url: `/tasks/${id}`,
-      headers: { 'Authorization': `Bearer ${token}` },
+      headers: {},
       data: {}
     });
-    let newTasks = [...tasks];
+    let newTasks = [...tasks.docs];
     newTasks = newTasks.filter(task => task._id !== id);
-    setTasks(newTasks);
+    setTasks({...tasks, docs: newTasks});
     dispatchSnack(setSnackMessage({
       message: 'Task deleted sucessfully.',
       display: true,
@@ -75,22 +84,28 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const getTasks = async (url) => {
-      const tasks = await axios({
+    const getTasks = async (url, page, order) => {
+      const tasksRes = await axios({
         method: 'get',
         url: url,
-        headers: { 'Authorization': `Bearer ${token}` },
-        data: {}
+        headers: {},
+        data: {},
+        params: {
+          completed: null,
+          page: page,
+          limit: 5,
+          sortBy: `title_${order}`
+        }
       });
-      setTasks(tasks.data);
+      setTasks(tasksRes.data);
     }
-    getTasks('/tasks');
-  }, [token])
+    getTasks('/tasks', page, order);
+  }, [token, order, page, dispatchSnack])
 
   const updateTask = async (task) => {
-    const newTasks = tasks.filter(t => t._id !== task._id);
+    const newTasks = tasks.docs.filter(t => t._id !== task._id);
     newTasks.push(task);
-    setTasks(newTasks);
+    setTasks({...tasks, docs: newTasks});
     try {
       await axios({
         method: 'patch',
@@ -108,12 +123,40 @@ const Home = () => {
       }))
     } catch (error) {
       dispatchSnack(setSnackMessage({
-          message: 'Task update failed.',
-          display: true,
-          severity: 'error'
+        message: 'Task update failed.',
+        display: true,
+        severity: 'error'
       }));
     }
   }
+
+
+  let loading = 'Loading...';
+  if(tasks.docs) {
+    loading = tasks.docs.map(task => (
+      <Box key={task._id}>
+        <ListItem >
+          <ListItemAvatar>
+            <Avatar>
+              <WorkIcon />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText primary={task.title} secondary={task.description} />
+          <ListItemIcon>
+            <IconButton edge="end" aria-label="delete" onClick={() => showDialog(task._id)}>
+              <EditIcon color="primary" />
+            </IconButton>
+          </ListItemIcon>
+          <ListItemSecondaryAction>
+            <IconButton edge="end" aria-label="delete" onClick={() => deleteTask(task._id)}>
+              <DeleteIcon color="error" />
+            </IconButton>
+          </ListItemSecondaryAction>
+        </ListItem>
+      </Box>
+    ))
+  }
+
 
   return (
     <motion.div
@@ -127,27 +170,21 @@ const Home = () => {
           All Tasks:
         </Typography>
         <hr />
+        <Box>
+          <Button>
+            <VerticalAlignBottomIcon onClick={() => setOrder('asc')} />
+          </Button>
+
+          <Button>
+            <VerticalAlignTopIcon onClick={() => setOrder('desc')} />
+          </Button>
+        </Box>
+
         <List className={classes.root}>
-          {tasks.length > 0 ? tasks.map(task => (
-            <ListItem key={task._id}>
-              <ListItemAvatar>
-                <Avatar>
-                  <WorkIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary={task.title} secondary={task.description} />
-              <ListItemIcon>
-                <IconButton edge="end" aria-label="delete" onClick={() => showDialog(task._id)}>
-                  <EditIcon color="primary" />
-                </IconButton>
-              </ListItemIcon>
-              <ListItemSecondaryAction>
-                <IconButton edge="end" aria-label="delete" onClick={() => deleteTask(task._id)}>
-                  <DeleteIcon color="error" />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
-          )) : <Box>
+          {tasks.docs ?  <Box>
+            {loading}
+            <PaginationComponent count={ tasks.totalPages } changePage={setPage} />
+          </Box> : <Box>
               <Typography variant="h4" gutterBottom >
                 No tasks.
             </Typography>

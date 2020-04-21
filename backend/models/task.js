@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const taskSchema = new mongoose.Schema({
     title: {
@@ -21,7 +21,11 @@ const taskSchema = new mongoose.Schema({
         required: true,
         ref: 'User'
     }
+}, {
+    timestamps: true
 })
+
+taskSchema.plugin(mongoosePaginate);
 
 // Task model
 const Task = mongoose.model('Task', taskSchema);
