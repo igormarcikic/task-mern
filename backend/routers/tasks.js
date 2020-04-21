@@ -39,11 +39,8 @@ router.patch('/tasks/:id', auth, async(req,res)=>{
     }
 });
 
-// Read all tasks/ or with a query /tasks?completed=false
-// limit and skip pagination options - GET /tasks?limit=2?skip=0
-// sort by - GET /tasks?sortBy=createdAt_asc   (_desc)
+// Read and query tasks
 router.get('/tasks', auth, async (req,res)=>{
-    // const tasks = await Task.find({ owner: req.user._id });
     const completed = req.query.completed;
     const page = req.query.page;
     const limit = req.query.limit;
@@ -66,33 +63,10 @@ router.get('/tasks', auth, async (req,res)=>{
         sort
     }
 
-    const Tt = await Task.paginate(query, options);
-
-
-    // const match = {};
-    // const sort = {};
-
-    // if(req.query.completed) {
-    //     match.completed = req.query.completed === null;
-    // }
-
-    // if(req.query.sortBy) {
-    //     const parts = req.query.sortBy.split('_');
-    //     sort[parts[0]] = parts[1] === 'desc' ? -1 : 1;
-    // }
-
+    
     try{
-        // await req.user.populate({
-        //     path: 'tasks',
-        //     match: match,
-        //     options: {
-        //         limit: parseInt(req.query.limit),
-        //         skip: parseInt(req.query.skip),
-        //         sort: sort
-        //     }
-        // }).execPopulate();
-        // res.send(req.user.tasks);
-        res.send(Tt);
+        const tasks = await Task.paginate(query, options);
+        res.send(tasks);
     }catch(error){
         res.status(500).send();  
     }  

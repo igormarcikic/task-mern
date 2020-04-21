@@ -25,6 +25,7 @@ const taskSchema = new mongoose.Schema({
     timestamps: true
 })
 
+// Use a plugin for pagination
 taskSchema.plugin(mongoosePaginate);
 
 // Task model

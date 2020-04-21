@@ -7,18 +7,18 @@ import { Link } from 'react-router-dom';
 import { logoutUser } from '../../context/auth/actions';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { 
-    Drawer,
-    AppBar,
-    Toolbar,
-    MenuList,
-    MenuItem,
-    CssBaseline,
-    Typography,
-    Divider,
-    IconButton,
-    Box,
-    Button
+import {
+  Drawer,
+  AppBar,
+  Toolbar,
+  MenuList,
+  MenuItem,
+  CssBaseline,
+  Typography,
+  Divider,
+  IconButton,
+  Box,
+  Button
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -93,35 +93,35 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   appTitle: {
-      flex: 1,
-      '& a': {
-        textDecoration: 'none',
-        color: 'black'
-      }
+    flex: 1,
+    '& a': {
+      textDecoration: 'none',
+      color: 'black'
+    }
   }
 }));
 
 const LoggedInLinks = [{
-    name: 'Home',
-    path: '/'
-},{
-    name: 'Profile',
-    path:'/profile'
+  name: 'Home',
+  path: '/'
+}, {
+  name: 'Profile',
+  path: '/profile'
 }]
 
 const LoggedOutLinks = [{
-    name: 'Login',
-    path: '/login'
-},{
-    name: 'Signup',
-    path: '/signup'
+  name: 'Login',
+  path: '/login'
+}, {
+  name: 'Signup',
+  path: '/signup'
 }]
 
 const Navigation = (props) => {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const { state: {user, token}, dispatchAuth } = useContext(AuthContext);
+  const { state: { user, token }, dispatchAuth } = useContext(AuthContext);
   const { dispatchSnack } = useContext(SnackContext);
 
   const handleDrawerOpen = () => {
@@ -134,34 +134,34 @@ const Navigation = (props) => {
 
 
   const getIconHandler = icon => {
-    switch(icon){
-        case 'Home':
-            return (<DashboardIcon color="primary" />)
-        case 'Profile':
-          return(<AccountBoxIcon color="primary" />)
-        case 'Login':
-            return (<PersonIcon color="primary" />)
-        case 'Signup':
-            return (<AccountBoxIcon color="primary" />)
-        default: 
-          return (<AccountBoxIcon color="primary" />)
+    switch (icon) {
+      case 'Home':
+        return (<DashboardIcon color="primary" />)
+      case 'Profile':
+        return (<AccountBoxIcon color="primary" />)
+      case 'Login':
+        return (<PersonIcon color="primary" />)
+      case 'Signup':
+        return (<AccountBoxIcon color="primary" />)
+      default:
+        return (<AccountBoxIcon color="primary" />)
     }
-}
+  }
 
-const logoutHandler = async () => {
-  await axios({
-    method: 'post',
-    url: '/users/logout',
-    headers: {'Authorization' : `Bearer ${token}`}, 
-    data: {}
-  });
-  dispatchAuth(logoutUser())
-  dispatchSnack(setSnackMessage({
-    message: 'Logged out sucessfully.',
-    display: true,
-    severity: 'success'
-  }))
-};
+  const logoutHandler = async () => {
+    await axios({
+      method: 'post',
+      url: '/users/logout',
+      headers: { 'Authorization': `Bearer ${token}` },
+      data: {}
+    });
+    dispatchAuth(logoutUser())
+    dispatchSnack(setSnackMessage({
+      message: 'Logged out sucessfully.',
+      display: true,
+      severity: 'success'
+    }))
+  };
 
 
   return (
@@ -189,13 +189,13 @@ const logoutHandler = async () => {
             <Link to='/'>ToDo App</Link>
           </Typography>
           {user ? (
-            <Button 
-                color="primary"
-                variant="contained"
-                startIcon={<PersonOutlineIcon />}
-                onClick={logoutHandler}
-                >
-                Logout
+            <Button
+              color="primary"
+              variant="contained"
+              startIcon={<PersonOutlineIcon />}
+              onClick={logoutHandler}
+            >
+              Logout
             </Button>) : null}
         </Toolbar>
       </AppBar>
@@ -218,36 +218,36 @@ const logoutHandler = async () => {
           </IconButton>
         </div>
         <Divider />
-        {user ? 
-            (<MenuList>
-                {LoggedInLinks.map(link => (
-                    <MenuItem button component={Link} to={link.path} key={link.name}>
-                        {getIconHandler(link.name)} 
-                        <Box fontSize={16} ml={4}>{link.name}</Box>
-                    </MenuItem>
-                ))}
-                <Divider />
-                <MenuItem button component={Link} to='/tasks'>
-                    <AssignmentIcon color="primary" />
-                        <Box fontSize={16} ml={4}>New Task</Box>
-                </MenuItem>
-            </MenuList>) :
-            (<MenuList>
-                {LoggedOutLinks.map(link => (
-                    <MenuItem button component={Link} to={link.path} key={link.name}>
-                        {getIconHandler(link.name)} 
-                        <Box fontSize={16} ml={4}>{link.name}</Box>{}
-                    </MenuItem>
-                ))}
-            </MenuList>)}
+        {user ?
+          (<MenuList>
+            {LoggedInLinks.map(link => (
+              <MenuItem button component={Link} to={link.path} key={link.name}>
+                {getIconHandler(link.name)}
+                <Box fontSize={16} ml={4}>{link.name}</Box>
+              </MenuItem>
+            ))}
+            <Divider />
+            <MenuItem button component={Link} to='/tasks'>
+              <AssignmentIcon color="primary" />
+              <Box fontSize={16} ml={4}>New Task</Box>
+            </MenuItem>
+          </MenuList>) :
+          (<MenuList>
+            {LoggedOutLinks.map(link => (
+              <MenuItem button component={Link} to={link.path} key={link.name}>
+                {getIconHandler(link.name)}
+                <Box fontSize={16} ml={4}>{link.name}</Box>{}
+              </MenuItem>
+            ))}
+          </MenuList>)}
         <Divider />
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-            {props.children}
+        {props.children}
       </main>
-      
-        <SnackMessage />
+
+      <SnackMessage />
     </div>
   );
 }

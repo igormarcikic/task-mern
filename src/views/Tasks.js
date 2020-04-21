@@ -49,7 +49,7 @@ const Tasks = () => {
 
   axiosConfig(axios, token);
 
- 
+
   const onSubmit = async (values, resetForm) => {
     try {
       const task = await axios({
@@ -72,9 +72,9 @@ const Tasks = () => {
       }))
     } catch (error) {
       dispatchSnack(setSnackMessage({
-          message: 'Task creation failed.',
-          display: true,
-          severity: 'error'
+        message: 'Task creation failed.',
+        display: true,
+        severity: 'error'
       }));
     }
   }

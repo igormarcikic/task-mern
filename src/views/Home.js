@@ -44,8 +44,8 @@ const Home = () => {
     display: false,
     id: null
   });
-  const [ page, setPage ] = useState(1);
-  const [ order, setOrder ] = useState('asc');
+  const [page, setPage] = useState(1);
+  const [order, setOrder] = useState('desc');
   const { state: { token } } = useContext(AuthContext);
   const { dispatchSnack } = useContext(SnackContext);
 
@@ -61,7 +61,7 @@ const Home = () => {
     });
     let newTasks = [...tasks.docs];
     newTasks = newTasks.filter(task => task._id !== id);
-    setTasks({...tasks, docs: newTasks});
+    setTasks({ ...tasks, docs: newTasks });
     dispatchSnack(setSnackMessage({
       message: 'Task deleted sucessfully.',
       display: true,
@@ -94,7 +94,7 @@ const Home = () => {
           completed: null,
           page: page,
           limit: 5,
-          sortBy: `title_${order}`
+          sortBy: `updatedAt_${order}`
         }
       });
       setTasks(tasksRes.data);
@@ -105,7 +105,7 @@ const Home = () => {
   const updateTask = async (task) => {
     const newTasks = tasks.docs.filter(t => t._id !== task._id);
     newTasks.push(task);
-    setTasks({...tasks, docs: newTasks});
+    setTasks({ ...tasks, docs: newTasks });
     try {
       await axios({
         method: 'patch',
@@ -132,7 +132,7 @@ const Home = () => {
 
 
   let loading = 'Loading...';
-  if(tasks.docs) {
+  if (tasks.docs) {
     loading = tasks.docs.map(task => (
       <Box key={task._id}>
         <ListItem >
@@ -170,20 +170,20 @@ const Home = () => {
           All Tasks:
         </Typography>
         <hr />
-        <Box>
-          <Button>
-            <VerticalAlignBottomIcon onClick={() => setOrder('asc')} />
-          </Button>
-
-          <Button>
-            <VerticalAlignTopIcon onClick={() => setOrder('desc')} />
-          </Button>
-        </Box>
 
         <List className={classes.root}>
-          {tasks.docs ?  <Box>
+          {tasks.docs ? <Box>
+            <Box>
+              <Button>
+                <VerticalAlignBottomIcon onClick={() => setOrder('asc')} />
+              </Button>
+
+              <Button>
+                <VerticalAlignTopIcon onClick={() => setOrder('desc')} />
+              </Button>
+            </Box>
             {loading}
-            <PaginationComponent count={ tasks.totalPages } changePage={setPage} />
+            <PaginationComponent count={tasks.totalPages} changePage={setPage} />
           </Box> : <Box>
               <Typography variant="h4" gutterBottom >
                 No tasks.

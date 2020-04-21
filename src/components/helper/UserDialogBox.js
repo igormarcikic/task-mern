@@ -1,4 +1,4 @@
-import React,{ useContext } from 'react';
+import React, { useContext } from 'react';
 import { AuthContext } from '../../context/auth/AuthContext';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -6,7 +6,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
     Button,
     Dialog,
-    DialogActions,
     DialogContent,
     DialogTitle,
     Grid,
@@ -30,7 +29,7 @@ const UpdateSchema = Yup.object().shape({
         .required('Required')
 });
 
-  const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({
     root: {
     },
     margin: {
@@ -39,54 +38,54 @@ const UpdateSchema = Yup.object().shape({
     input: {
         flex: 1
     }
-  }));
+}));
 
-const UserDialogBox = ({updateMe, showDialog, closeDialog, dialog}) => {
+const UserDialogBox = ({ updateMe, showDialog, closeDialog, dialog }) => {
     const classes = useStyles();
-    const { state:{user} } = useContext(AuthContext);
+    const { state: { user } } = useContext(AuthContext);
 
     const onSubmit = (values) => {
-        const updatedUser = {...user};
+        const updatedUser = { ...user };
         updatedUser.name = values.name;
         updatedUser.age = values.age;
         updatedUser.email = values.email;
         updateMe(updatedUser);
         closeDialog();
-      }
+    }
 
     return (
         <Dialog
-        open={dialog}
-        onClose={closeDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"Update user:"}</DialogTitle>
-        <DialogContent>
-        <Formik
-                        initialValues={{ name: user.name , age: user.age, email: user.email }}
-                        validationSchema={UpdateSchema}
-                        onSubmit={(values) => {
-                            onSubmit(values);
-                        }}
-                    >
-                        {({
-                            values,
-                            errors,
-                            touched,
-                            handleChange,
-                            handleBlur,
-                            handleSubmit,
-                        }) => (
-                                <form onSubmit={handleSubmit}>
-                                    <div className={classes.margin}>
-                                        <Grid container spacing={1} alignItems="flex-end">
+            open={dialog}
+            onClose={closeDialog}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="alert-dialog-title">{"Update user:"}</DialogTitle>
+            <DialogContent>
+                <Formik
+                    initialValues={{ name: user.name, age: user.age, email: user.email }}
+                    validationSchema={UpdateSchema}
+                    onSubmit={(values) => {
+                        onSubmit(values);
+                    }}
+                >
+                    {({
+                        values,
+                        errors,
+                        touched,
+                        handleChange,
+                        handleBlur,
+                        handleSubmit,
+                    }) => (
+                            <form onSubmit={handleSubmit}>
+                                <div className={classes.margin}>
+                                    <Grid container spacing={1} alignItems="flex-end">
                                         <Grid item>
                                             <AccountCircle color="primary" />
                                         </Grid>
                                         <Grid item className={classes.input}>
-                                            <TextField 
-                                                label="Name:" 
+                                            <TextField
+                                                label="Name:"
                                                 fullWidth
                                                 type="text"
                                                 name="name"
@@ -97,17 +96,17 @@ const UserDialogBox = ({updateMe, showDialog, closeDialog, dialog}) => {
                                                 error={(errors.name && touched.name && errors.name) ? true : false}
                                             />
                                         </Grid>
-                                        </Grid>
-                                    </div>
+                                    </Grid>
+                                </div>
 
-                                    <div className={classes.margin}>
-                                        <Grid container spacing={1} alignItems="flex-end">
+                                <div className={classes.margin}>
+                                    <Grid container spacing={1} alignItems="flex-end">
                                         <Grid item>
                                             <DialpadIcon color="primary" />
                                         </Grid>
                                         <Grid item className={classes.input}>
-                                            <TextField 
-                                                label="Age:" 
+                                            <TextField
+                                                label="Age:"
                                                 fullWidth
                                                 type="number"
                                                 name="age"
@@ -118,17 +117,17 @@ const UserDialogBox = ({updateMe, showDialog, closeDialog, dialog}) => {
                                                 error={(errors.age && touched.age && errors.age) ? true : false}
                                             />
                                         </Grid>
-                                        </Grid>
-                                    </div>
+                                    </Grid>
+                                </div>
 
-                                    <div className={classes.margin}>
-                                        <Grid container spacing={1} alignItems="flex-end">
+                                <div className={classes.margin}>
+                                    <Grid container spacing={1} alignItems="flex-end">
                                         <Grid item>
                                             <EmailIcon color="primary" />
                                         </Grid>
                                         <Grid item className={classes.input}>
-                                            <TextField 
-                                                label="Email:" 
+                                            <TextField
+                                                label="Email:"
                                                 fullWidth
                                                 type="email"
                                                 name="email"
@@ -139,37 +138,35 @@ const UserDialogBox = ({updateMe, showDialog, closeDialog, dialog}) => {
                                                 error={(errors.email && touched.email && errors.email) ? true : false}
                                             />
                                         </Grid>
-                                        </Grid>
-                                    </div>
-                          <Box
-                              display='flex' 
-                              justifyContent="center"  
-                              alignItems="center"
-                              mt={3}
-                          >
-                              <Box mr={1}>
-                                  <Button 
-                                    onClick={showDialog}
-                                      color="primary"
-                                      type="submit"
-                                  >
-                                      Update User
+                                    </Grid>
+                                </div>
+                                <Box
+                                    display='flex'
+                                    justifyContent="center"
+                                    alignItems="center"
+                                    mt={3}
+                                >
+                                    <Box mr={1}>
+                                        <Button
+                                            onClick={showDialog}
+                                            color="primary"
+                                            type="submit"
+                                        >
+                                            Update User
                                   </Button>
-                                    <Button 
-                                        onClick={closeDialog} 
-                                        color="primary"
-                                    >
-                                        Cancel
+                                        <Button
+                                            onClick={closeDialog}
+                                            color="primary"
+                                        >
+                                            Cancel
                                     </Button>
-                              </Box>
-                          </Box>
-                      </form>
-                  )}
-            </Formik>
-        </DialogContent>
-        <DialogActions>
-        </DialogActions>
-      </Dialog>
+                                    </Box>
+                                </Box>
+                            </form>
+                        )}
+                </Formik>
+            </DialogContent>
+        </Dialog>
     )
 }
 

@@ -16,7 +16,8 @@ import {
     CardActions,
     CardContent,
     Button, 
-    Divider
+    Divider,
+    CardMedia
 } from '@material-ui/core';
 import { axiosConfig } from '../config/axiosConfig';
 
@@ -27,6 +28,9 @@ const useStyles = makeStyles({
     },
     cardAct: {
         justifyContent: 'space-around'
+    },
+    media: {
+        height: 250
     }
   });
 
@@ -98,11 +102,11 @@ const About = () => {
                 <hr />
                 <Card className={classes.root}>
                     <CardActionArea>
-                        {/* <CardMedia
+                        <CardMedia
                         className={classes.media}
-                        image="/static/images/cards/contemplative-reptile.jpg"
+                        image="https://cdn.pixabay.com/photo/2017/04/04/14/24/turtle-2201433_960_720.jpg"
                         title="Contemplative Reptile"
-                        /> */}
+                        />
                         <CardContent>
                         <Typography gutterBottom variant="h5" component="h2">
                             Name: <strong>{user.name}</strong>

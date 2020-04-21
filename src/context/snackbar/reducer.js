@@ -1,7 +1,7 @@
 import { SNACK_MESSAGE, CLOSE_SNACK } from './actions';
 
 const reducer = (state, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case SNACK_MESSAGE:
             return {
                 message: action.payload.message,

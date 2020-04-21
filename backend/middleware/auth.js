@@ -3,6 +3,7 @@ const path = require('path');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
+// Middleware for authenticating a user
 const auth = async (req,res,next) => {
     try {
         const token = req.header('Authorization').replace('Bearer ', '');

@@ -98,7 +98,7 @@ const Login = (props) => {
                 <Box>
                     <Typography variant="h4" gutterBottom align="center">
                         Log In:
-                </Typography>
+                    </Typography>
                 </Box>
                 <Container maxWidth="sm">
                     <Formik
@@ -117,7 +117,6 @@ const Login = (props) => {
                             handleBlur,
                             handleSubmit,
                             isSubmitting,
-                            /* and other goodies */
                         }) => (
                                 <form onSubmit={handleSubmit}>
                                     <div className={classes.margin}>
@@ -191,12 +190,6 @@ const Login = (props) => {
                                 </form>
                             )}
                     </Formik>
-
-                    {/* <Snackbar open={snackbar.display} autoHideDuration={6000} onClose={handleClose}>
-                        <Alert onClose={handleClose} severity={snackbar.severity}>
-                            {snackbar.message}
-                        </Alert>
-                    </Snackbar> */}
                 </Container>
             </CssBaseline>
 

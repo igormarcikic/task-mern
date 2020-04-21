@@ -6,7 +6,7 @@ import Profile from './views/Profile';
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
 import Tasks from './views/Tasks';
-import ProtectedRoute from './ProtectedRoute';
+import ProtectedRoute from './components/ProtectedRoute';
 import { AnimatePresence } from 'framer-motion';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { orange, amber, red } from '@material-ui/core/colors';
@@ -27,21 +27,21 @@ const theme = createMuiTheme({
 function App() {
   return (
     <div className="App">
-        <MuiThemeProvider theme={theme}>
-          <Router>
+      <MuiThemeProvider theme={theme}>
+        <Router>
           <Navigation>
             <AnimatePresence>
-                <Switch>
-                  <ProtectedRoute exact path="/" component={Home} />
-                  <ProtectedRoute exact path="/profile" component={Profile} />
-                  <ProtectedRoute exact path="/tasks" component={Tasks} />
-                  <Route exact path="/login" component={Login} />
-                  <Route exact path="/signup" component={Signup} />
-                </Switch>
+              <Switch>
+                <ProtectedRoute exact path="/" component={Home} />
+                <ProtectedRoute exact path="/profile" component={Profile} />
+                <ProtectedRoute exact path="/tasks" component={Tasks} />
+                <Route exact path="/login" component={Login} />
+                <Route exact path="/signup" component={Signup} />
+              </Switch>
             </AnimatePresence>
           </Navigation>
-          </Router>
-        </MuiThemeProvider>
+        </Router>
+      </MuiThemeProvider>
     </div>
   );
 }

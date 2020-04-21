@@ -1,7 +1,7 @@
 import { SIGNUP, LOGIN, LOGOUT, DELETE, UPDATE_USER } from './actions';
 
 const reducer = (state, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case SIGNUP:
         case LOGIN:
             return {
@@ -9,7 +9,7 @@ const reducer = (state, action) => {
                 token: action.payload.token
             }
         case DELETE:
-        case LOGOUT: 
+        case LOGOUT:
             return {
                 user: null,
                 token: null
