@@ -52,7 +52,7 @@ const SignupSchema = Yup.object().shape({
     password: Yup.string()
         .min(6, 'Password too short!')
         .max(100, 'Password too long!')
-        .required('Required'),
+        .required('Required')
 })
 
 
@@ -111,7 +111,7 @@ const Signup = (props) => {
                 </Box>
                 <Container maxWidth="sm">
                     <Formik
-                        initialValues={{ name: '', age: 0, email: '', password: '' }}
+                        initialValues={{ name: '', age: 0, email: '', password: '', file: null }}
                         validationSchema={SignupSchema}
                         onSubmit={(values, { setSubmitting }) => {
                             onSubmit(values);

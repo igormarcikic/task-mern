@@ -174,12 +174,12 @@ const Home = () => {
         <List className={classes.root}>
           {tasks.docs ? <Box>
             <Box>
-              <Button>
-                <VerticalAlignBottomIcon onClick={() => setOrder('asc')} />
+              <Button onClick={() => setOrder('asc')}>
+                <VerticalAlignBottomIcon />
               </Button>
 
-              <Button>
-                <VerticalAlignTopIcon onClick={() => setOrder('desc')} />
+              <Button onClick={() => setOrder('desc')} >
+                <VerticalAlignTopIcon />
               </Button>
             </Box>
             {loading}

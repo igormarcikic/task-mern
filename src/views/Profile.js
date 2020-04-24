@@ -17,20 +17,23 @@ import {
     CardContent,
     Button, 
     Divider,
-    CardMedia
+    CardMedia,
+    TextField
 } from '@material-ui/core';
 import { axiosConfig } from '../config/axiosConfig';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 
 const useStyles = makeStyles({
     root: {
       maxWidth: 500,
       margin: 'auto'
     },
-    cardAct: {
-        justifyContent: 'space-around'
-    },
     media: {
         height: 250
+    },
+    button: {
+        color: 'white'
     }
   });
 
@@ -38,6 +41,7 @@ const About = () => {
     const { state: { user, token } , dispatchAuth } = useContext(AuthContext);
     const { dispatchSnack } = useContext(SnackContext);
     const classes = useStyles();
+    const [ avatarImage, setAvatarImage ] = useState('');
     const [ dialog, setDialog ] = useState(false);
     axiosConfig(axios, token)
 
@@ -87,6 +91,25 @@ const About = () => {
         setDialog(false)
       };
 
+      const avatarUploadHandler = async (event) => {
+        event.preventDefault();
+        const fd = new FormData();
+        fd.append('avatar', avatarImage);
+
+        const user = await axios({
+            method: 'post',
+            url: '/users/me/avatar/',
+            headers: {'Content-Type': 'multipart/form-data'},
+            data: fd
+        })
+        dispatchAuth(storeUpdatedUser(user.data));
+        dispatchSnack(setSnackMessage({
+            message: 'Avatar updated sucessfully.',
+            display: true,
+            severity: 'success'
+        }));
+      }
+
     return (
         <motion.div
 			initial={{ scale: 0, opacity: 0 }}
@@ -102,10 +125,11 @@ const About = () => {
                 <hr />
                 <Card className={classes.root}>
                     <CardActionArea>
+                        
                         <CardMedia
-                        className={classes.media}
-                        image="https://cdn.pixabay.com/photo/2017/04/04/14/24/turtle-2201433_960_720.jpg"
-                        title="Contemplative Reptile"
+                            className={classes.media}
+                            image={`/users/${user._id}/avatar`}
+                            title={user.name}
                         />
                         <CardContent>
                         <Typography gutterBottom variant="h5" component="h2">
@@ -121,23 +145,56 @@ const About = () => {
                         </CardContent>
                     </CardActionArea>
                     <Divider />
-                    <CardActions className={classes.cardAct}>
+                    <CardActions >
                         <Button 
-                            color="primary" 
+                            className={classes.button}
                             variant="contained"
+                            color="primary" 
                             onClick={showDialog}
+                            size="small"
+                            startIcon={<EditIcon />}
                         >
-                            Update
+                            Update User
                         </Button>
                         <Button 
-                            color="secondary" 
                             variant="contained"
+                            color="secondary" 
                             onClick={deleteMe}
+                            size="small"
+                            startIcon={<DeleteIcon />}
                         >
-                            Delete
+                            Delete User
                         </Button>
                     </CardActions>
                 </Card>
+
+                <Card className={classes.root}>
+                    <CardActionArea>
+                        <CardContent>
+                        <Typography variant="body2" color="textSecondary" component="p">
+                            Use the form below to update your avatar:
+                        </Typography>
+                        </CardContent>
+                    </CardActionArea>
+                    <CardActions>
+                        <form onSubmit={avatarUploadHandler}>
+                            <TextField
+                                type="file"
+                                name="file"
+                                onChange={(event) => setAvatarImage(event.target.files[0])}
+                            />
+                            <Button 
+                                variant="contained"
+                                color="primary" 
+                                type="submit"
+                                size="small"
+                            >
+                                Update
+                            </Button>
+                        </form>
+                    </CardActions>
+                </Card>
+
                 { dialog ? <UserDialogBox updateMe={updateMe} showDialog={showDialog} closeDialog={closeDialog} dialog={dialog} /> : null }
             </Container>
         </motion.div>
